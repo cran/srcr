@@ -11,8 +11,8 @@ find_config_files(
 )
 }
 \arguments{
-\item{basenames}{A vector of file names to use in searching for configuration
-files.}
+\item{basenames}{A vector of file names (without directory or file type) to
+use in searching for configuration files.}
 
 \item{dirs}{A vector of directory names to use in searching for configuration
 files.}
@@ -40,9 +40,10 @@ build potential file names.  If \code{dirs} is not specified, the
 following directories are checked by default:
 \enumerate{
 \item the user's \verb{$HOME} directory
+\item the directory named \code{.srcr} (no leading \code{.} on Windows) under \verb{$HOME}
 \item the directory in which the executing script is located
 \item the directory in which the calling function's calling function's
-source file is located (typically an application-level library)    For
+source file is located (typically an application-level library). For
 example, if the function \code{my_setup()} calls \code{\link[=srcr]{srcr()}}, which in turn calls
 \code{\link[=find_config_files]{find_config_files()}}, then the directory of the file containing
 \code{my_setup()} will be tried.
@@ -68,9 +69,9 @@ example, if the function \code{my_setup()} calls \code{\link[=srcr]{srcr()}}, wh
 
 The suffices (file "type"s) of \code{.json}, \code{.conf}, and nothing,
 are tried with each candidate path; you may override this default by
-using th3 \code{suffices} parameter.  Finally, in order to accommodate the Unix
+using the \code{suffices} parameter.  Finally, in order to accommodate the Unix
 tradition of "hidden" configuration files, each basename is prefixed with
-a period before tryng the basename alone.
+a period before trying the basename alone.
 }
 \examples{
 \dontrun{

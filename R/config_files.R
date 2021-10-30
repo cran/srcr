@@ -14,9 +14,10 @@
 #' following directories are checked by default:
 #'
 #'   1. the user's `$HOME` directory
+#'   2. the directory named `.srcr` (no leading `.` on Windows) under `$HOME`
 #'   2. the directory in which the executing script is located
 #'   3. the directory in which the calling function's calling function's
-#'      source file is located (typically an application-level library)    For
+#'      source file is located (typically an application-level library). For
 #'      example, if the function `my_setup()` calls [srcr()], which in turn calls
 #'      [find_config_files()], then the directory of the file containing
 #'      `my_setup()` will be tried.
@@ -40,12 +41,12 @@
 #'
 #' The suffices (file "type"s) of `.json`, `.conf`, and nothing,
 #' are tried with each candidate path; you may override this default by
-#' using th3 `suffices` parameter.  Finally, in order to accommodate the Unix
+#' using the `suffices` parameter.  Finally, in order to accommodate the Unix
 #' tradition of "hidden" configuration files, each basename is prefixed with
-#' a period before tryng the basename alone.
+#' a period before trying the basename alone.
 #'
-#' @param basenames A vector of file names to use in searching for configuration
-#'   files.
+#' @param basenames A vector of file names (without directory or file type) to
+#' use in searching for configuration files.
 #' @param dirs A vector of directory names to use in searching for configuration
 #'   files.
 #' @param suffices A vector of suffices (file "type"s) to use in searching for
@@ -93,6 +94,8 @@ find_config_files <- function(basenames = .basename.defaults(),
 
 ### "Private" functions
 .read_json_config <- function(paths = c()) {
+    if (length(paths) < 1) stop("No config paths provided")
+
     for (p in paths) {
         config <-
             tryCatch(jsonlite::fromJSON(p),
@@ -100,12 +103,14 @@ find_config_files <- function(basenames = .basename.defaults(),
         if (!is.na(config[1])) return(config)
     }
 
-    stop("No config files found")
+    stop("No valid config files found in ", paste(paths, collapse = ', '))
 }
 
 
 .dir.defaults <- function() {
     p <- c(Sys.getenv('HOME'),
+           file.path(Sys.getenv('HOME'),
+                     ifelse(.Platform$OS.type == 'windows', 'srcr', '.srcr')),
            unlist(lapply(c(1, sys.parent(3), sys.parent(2)),
                          function (x)
                              tryCatch(utils::getSrcDirectory(sys.function(x)),
