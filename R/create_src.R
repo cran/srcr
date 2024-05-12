@@ -77,8 +77,8 @@ srcr <- function(basenames = NA, dirs = NA, suffices = NA,
                  allow_post_connect =
                    getOption('srcr.allow_post_connect', c())) {
 
-    if (is.na(config)) {
-        if (is.na(paths)) {
+    if (all(is.na(config))) {
+        if (all(is.na(paths))) {
             args <- mget(c('dirs','basenames', 'suffices'))
             args <- args[ !is.na(args) ]
             paths <- do.call(find_config_files, args)
@@ -94,7 +94,13 @@ srcr <- function(basenames = NA, dirs = NA, suffices = NA,
         config <- .read_json_config(paths)
     }
 
-    if (! grepl('^src_', config$src_name)) {
+  stopifnot(exprs = {
+    ! is.na(config)
+    is.character(config$src_name)
+    is.list(config$src_args)
+  })
+
+  if (! grepl('^src_', config$src_name)) {
         drv <- tryCatch(DBI::dbDriver(config$src_name), error = function(e) NULL)
         if (is.null(drv)) {
             lib <- tryCatch(library(config$src_name,

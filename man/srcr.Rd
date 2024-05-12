@@ -2,6 +2,7 @@
 % Please edit documentation in R/create_src.R, R/srcr.R
 \docType{package}
 \name{srcr}
+\alias{srcr-package}
 \alias{srcr}
 \title{Connect to database using config file}
 \usage{
@@ -109,3 +110,21 @@ srcr(config =
             post_connect_sql = 'set role project_role;'))
 }
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/baileych/srcr}
+  \item Report bugs at \url{https://github.com/baileych/srcr/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Charles Bailey \email{baileyc@chop.edu}
+
+Authors:
+\itemize{
+  \item Hanieh Razzaghi \email{razzaghih@chop.edu}
+}
+
+}
+\keyword{internal}
